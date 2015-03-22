@@ -30,7 +30,7 @@ else
 fi
 #check python version
 #----------------------------------------------------------------------------------------------------------------------------------------------#
-function current_datetime {
+function check {
 python - <<END
 try:
     import numpy
@@ -40,35 +40,38 @@ try:
     import scipy
 except ImportError:
     print "error"
+try:
+    import theano
+except ImportError:
+    print "error"
 END
 }
-result=$(current_datetime)
+result=$(check)
 if [[ $result == "error" ]]; then
-	echo -e "${red}${bold}Error:${normal}${NC}\tnumpy/scipy is not installed"
-	echo "Choose your linux distribution"
-	echo "1. Fedora."
-	echo "2. Debian-Ubuntu."
-	echo "3. Gentoo."
-	echo "4. Other."
-	echo "5. Exit."
-	read -p "Enter your choice [ 1 -5 ] " choice
+	echo -e "Choose your linux distribution"
+	echo -e "\t1. Fedora."
+	echo -e "\t2. Debian-Ubuntu."
+	echo -e "\t3. Other."
+	echo -e "\t4. Exit."
+	read -p "Enter your choice [ 1 -4 ] " choice
 	case $choice in
 		1)
-			sudo yum install numpy scipy python-matplotlib ipython python-pandas sympy python-nose
+			sudo yum install numpy scipy python-matplotlib ipython python-pandas sympy python-nose blas blas-devel python-pip
+			sudo pip install Theano;sudo pip install --upgrade theano;
+			echo -e "${green}${bold}\nDone${normal}${NC}\tNotes: http://deeplearning.net/software/theano/install.html"
 			;;
 		2)
-			sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
+			sudo apt-get install python-numpy python-scipy python-dev python-pip python-nose g++ libopenblas-dev git python-pip;
+			sudo pip install Theano;sudo pip install --upgrade theano;
+			echo -e "${green}${bold}\nDone${normal}${NC}\tNotes: http://deeplearning.net/software/theano/install_ubuntu.html#install-ubuntu"
 			;;
+
 		3)
-			sudo emerge -aN '>=dev-python/numpy-1.6' '>=sci-libs/scipy-0.10' '>=dev-python/matplotlib-1.1' '>=dev-python/ipython-0.13' '>=dev-python/pandas-0.8' '>=dev-python/sympy-0.7' '>=dev-python/nose-1.1'
-			;;
-	
-		4)
 			echo "Please follow instructions to install: http://www.scipy.org/scipylib/building/linux.html#specific-instructions"
 			;;
-		5)
+		4)
 			exit;;
 		esac
 else
-	echo -e "${green}${bold}OK${normal}${NC}\tNumpy installed"
+	echo -e "${green}${bold}\nDone${normal}${NC}";
 fi
