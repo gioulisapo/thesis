@@ -35,19 +35,20 @@ python - <<END
 try:
     import numpy
 except ImportError:
-    print "error"
+    print "Numpy doesn't seem to be installed. We will try to install it for you"
 try:
     import scipy
 except ImportError:
-    print "error"
+    print "Scipy doesn't seem to be installed. We will try to install it for you"
 try:
     import theano
 except ImportError:
-    print "error"
+    print "Theano doesn't seem to be installed. We will try to install it for you"
 END
 }
 result=$(check)
-if [[ $result == "error" ]]; then
+if [[ $result != "" ]]; then
+	echo -e "${red}${bold}Error:${normal}${NC}\t$result"
 	echo -e "Choose your linux distribution"
 	echo -e "\t1. Fedora."
 	echo -e "\t2. Debian-Ubuntu."
@@ -59,11 +60,13 @@ if [[ $result == "error" ]]; then
 			sudo yum install numpy scipy python-matplotlib ipython python-pandas sympy python-nose blas blas-devel python-pip
 			sudo pip install Theano;sudo pip install --upgrade theano;
 			echo -e "${green}${bold}\nDone${normal}${NC}\tNotes: http://deeplearning.net/software/theano/install.html"
+			exit
 			;;
 		2)
 			sudo apt-get install python-numpy python-scipy python-dev python-pip python-nose g++ libopenblas-dev git python-pip;
 			sudo pip install Theano;sudo pip install --upgrade theano;
 			echo -e "${green}${bold}\nDone${normal}${NC}\tNotes: http://deeplearning.net/software/theano/install_ubuntu.html#install-ubuntu"
+			exit
 			;;
 
 		3)
@@ -73,5 +76,5 @@ if [[ $result == "error" ]]; then
 			exit;;
 		esac
 else
-	echo -e "${green}${bold}\nDone${normal}${NC}";
+	echo -e "${green}${bold}\nDone:${normal}${NC}\tEverything seems to be installed properly";
 fi
