@@ -97,9 +97,9 @@ class Network():
         if initialization=='default':
             self.default_weight_initializer()
         elif initialization=='all_zero':
-            self.
-        else:
             self.all_zero_initializer()
+        else:
+            self.large_weight_initializer()
         self.cost=cost
 
     def default_weight_initializer(self): #New Method!!!
@@ -115,36 +115,33 @@ class Network():
         layers.
 
         """
+
         self.biases = [np.random.randn(y, 1) for y in self.sizes[1:]]
         self.weights = [np.random.randn(y, x)/np.sqrt(x) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
-    def large_weight_initializer(self): #Same as before
+    def large_weight_initializer(self):
         """Initialize the weights using a Gaussian distribution with mean 0
         and standard deviation 1.  Initialize the biases using a
         Gaussian distribution with mean 0 and standard deviation 1.
-
         Note that the first layer is assumed to be an input layer, and
         by convention we won't set any biases for those neurons, since
         biases are only ever used in computing the outputs from later
         layers.
-
         This weight and bias initializer uses the same approach as in
         Chapter 1, and is included for purposes of comparison.  It
         will usually be better to use the default weight initializer
         instead.
-
         """
         self.biases = [np.random.randn(y, 1) for y in self.sizes[1:]]
         self.weights = [np.random.randn(y, x) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
     def all_zero_initializer(self): #Same as before
-        """Initialize the weights and the biases to zero
-
+        """Initialize the weights as well as the biases to zeros 
         """
-        self.biases = [0 for y in self.sizes[1:]]
-        self.weights = [0 
+        self.biases = [np.zeros((y, 1)) for y in self.sizes[1:]]
+        self.weights = [np.zeros((y, x)) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
     def feedforward(self, a):
