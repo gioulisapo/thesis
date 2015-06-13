@@ -1,13 +1,18 @@
 """network2.py
 ~~~~~~~~~~~~~~
 
-An improved version of network.py, implementing the stochastic
-gradient descent learning algorithm for a feedforward neural network.
-Improvements include the addition of the cross-entropy cost function,
-regularization, and better initialization of network weights.  Note
-that I have focused on making the code simple, easily readable, and
-easily modifiable.  It is not optimized, and omits many desirable
-features.
+Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
+                     Gradients are calculated using backpropagation
+Neurons             :Sigmoid
+Loss functions      :Quadradic Loss function | Cross-Entropy
+W initialization    :Random, (Gaussian mean=0, variance=1)/sqrt(Number_Of_Neuron_Connection_Inputs) | Same as network1
+b initialization    :Random, Gaussian mean=0, variance=1
+Optimisation        :L2(Weight Decay) | none
+
+added features      :Added choice for initialization tequnique (class argument)
+                    :Added all_zero_initializer weight,bias init tequnique
+
+-
 
 """
 
@@ -25,6 +30,10 @@ import numpy as np
 
 class QuadraticCost:
 
+#########################################################################
+    pass
+
+#########################################################################
     @staticmethod
     def fn(a, y):
         """Return the cost associated with an output ``a`` and desired output
@@ -41,6 +50,10 @@ class QuadraticCost:
 
 class CrossEntropyCost:
 
+#########################################################################
+    pass
+
+#########################################################################
     @staticmethod
     def fn(a, y):
         """Return the cost associated with an output ``a`` and desired output
@@ -67,7 +80,7 @@ class CrossEntropyCost:
 #### Main Network class
 class Network():
 
-    def __init__(self, sizes, cost=CrossEntropyCost):
+    def __init__(self, sizes, cost=CrossEntropyCost, initialization='default'):
         """The list ``sizes`` contains the number of neurons in the respective
         layers of the network.  For example, if the list was [2, 3, 1]
         then it would be a three-layer network, with the first layer
@@ -80,10 +93,16 @@ class Network():
         """
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.default_weight_initializer()
+#########################################################################
+        if initialization=='default':
+            self.default_weight_initializer()
+        elif initialization=='all_zero':
+            self.
+        else:
+            self.all_zero_initializer()
         self.cost=cost
 
-    def default_weight_initializer(self):
+    def default_weight_initializer(self): #New Method!!!
         """Initialize each weight using a Gaussian distribution with mean 0
         and standard deviation 1 over the square root of the number of
         weights connecting to the same neuron.  Initialize the biases
@@ -100,7 +119,7 @@ class Network():
         self.weights = [np.random.randn(y, x)/np.sqrt(x) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
-    def large_weight_initializer(self):
+    def large_weight_initializer(self): #Same as before
         """Initialize the weights using a Gaussian distribution with mean 0
         and standard deviation 1.  Initialize the biases using a
         Gaussian distribution with mean 0 and standard deviation 1.
@@ -118,6 +137,14 @@ class Network():
         """
         self.biases = [np.random.randn(y, 1) for y in self.sizes[1:]]
         self.weights = [np.random.randn(y, x) 
+                        for x, y in zip(self.sizes[:-1], self.sizes[1:])]
+
+    def all_zero_initializer(self): #Same as before
+        """Initialize the weights and the biases to zero
+
+        """
+        self.biases = [0 for y in self.sizes[1:]]
+        self.weights = [0 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
     def feedforward(self, a):
@@ -142,7 +169,7 @@ class Network():
         data.  We can monitor the cost and accuracy on either the
         evaluation data or the training data, by setting the
         appropriate flags.  The method returns a tuple containing four
-        lists: the (per-epoch) costs on the evaluation data, the
+        lists``: the (per-epoch) costs on the evaluation data, the
         accuracies on the evaluation data, the costs on the training
         data, and the accuracies on the training data.  All values are
         evaluated at the end of each training epoch.  So, for example,
@@ -164,28 +191,26 @@ class Network():
             for mini_batch in mini_batches:
                 self.update_mini_batch(
                     mini_batch, eta, lmbda, len(training_data))
-            print "Epoch %s training complete" % j
+            print "__Epoch %s training complete__\t\t" % (j+1)
             if monitor_training_cost:
                 cost = self.total_cost(training_data, lmbda)
                 training_cost.append(cost)
-                print "Cost on training data: {}".format(cost)
+                print "_Cost on training data: {}_\t\t".format(cost)
             if monitor_training_accuracy:
                 accuracy = self.accuracy(training_data, convert=True)
                 training_accuracy.append(accuracy)
-                print "Accuracy on training data: {} / {}".format(
+                print "_Accuracy on training data: {} / {}_\t".format(
                     accuracy, n)
             if monitor_evaluation_cost:
                 cost = self.total_cost(evaluation_data, lmbda, convert=True)
                 evaluation_cost.append(cost)
-                print "Cost on evaluation data: {}".format(cost)
+                print "_Cost on evaluation data: {}_\t".format(cost)
             if monitor_evaluation_accuracy:
                 accuracy = self.accuracy(evaluation_data)
                 evaluation_accuracy.append(accuracy)
-                print "Accuracy on evaluation data: {} / {}".format(
+                print "_Accuracy on evaluation data: {} / {}_\t\t".format(
                     self.accuracy(evaluation_data), n_data)
-            print
-        return evaluation_cost, evaluation_accuracy, \
-            training_cost, training_accuracy
+        return evaluation_cost, evaluation_accuracy, training_cost, training_accuracy
 
     def update_mini_batch(self, mini_batch, eta, lmbda, n):
         """Update the network's weights and biases by applying gradient

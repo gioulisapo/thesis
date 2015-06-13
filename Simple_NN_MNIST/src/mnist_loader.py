@@ -43,7 +43,7 @@ def load_data():
     training_data, validation_data, test_data = cPickle.load(f)
     f.close()
     #########################################################################
-    print("Data Sucessfully Loaded")
+    # print("Data Sucessfully Loaded")
     #########################################################################
     return (training_data, validation_data, test_data)
 
@@ -77,9 +77,9 @@ def load_data_wrapper():
     test_inputs = [np.reshape(x, (784, 1)) for x in te_d[0]]
     test_data = zip(test_inputs, te_d[1])
     #########################################################################
-    print '\nSize of Training Data List:\t',len(training_data)
-    print 'Size of Validation Data List:\t',len(validation_data)
-    print 'Size of Test Data List:\t\t',len(test_data)
+    # print '\n__Size of Training Data List:__\t',len(training_data)
+    # print '__Size of Validation Data List:__\t',len(validation_data)
+    # print 'Size of Test Data List:\t\t',len(test_data)
     print '---------------------------------------------------------'
     #########################################################################
     return (training_data, validation_data, test_data)

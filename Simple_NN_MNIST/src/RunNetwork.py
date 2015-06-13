@@ -6,13 +6,13 @@ import timeit
 
 
 print '# Test'
-Hidden_Layers=[1];
+Hidden_Layers=[30];
 
 print '* The network consist of:',len(Hidden_Layers) ,'Hidden Layers'
 for i in range(0,len(Hidden_Layers)):
 	print '\t* Hidden Layer', i+1,'consist of:',Hidden_Layers[i],'hidden units'
 Layers=[784]+Hidden_Layers+[10]
-epochs=15
+epochs=3
 Mini_Batch_Size=5;
 Learning_Rate=0.25;
 print '\n* The network will run for:',epochs ,'epochs'

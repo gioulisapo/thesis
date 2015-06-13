@@ -2,11 +2,13 @@
 network.py
 ~~~~~~~~~~
 
-A module to implement the stochastic gradient descent learning
-algorithm for a feedforward neural network.  Gradients are calculated
-using backpropagation.  Note that I have focused on making the code
-simple, easily readable, and easily modifiable.  It is not optimized,
-and omits many desirable features.
+Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
+                     Gradients are calculated using backpropagation
+Neurons             :Sigmoid
+Loss functions      :Quadradic Loss function
+W initialization    :Random, Gaussian mean=0, variance=1
+b initialization    :Random, Gaussian mean=0, variance=1
+Optimisation        :none
 """
 
 #### Libraries
