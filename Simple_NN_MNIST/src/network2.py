@@ -3,29 +3,37 @@
 
 Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
                      Gradients are calculated using backpropagation
-Neurons             :Sigmoid
+Neurons             :Sigmoid | tanh
 Loss functions      :Quadradic Loss function | Cross-Entropy
 W initialization    :Random, (Gaussian mean=0, variance=1)/sqrt(Number_Of_Neuron_Connection_Inputs) | Same as network1
 b initialization    :Random, Gaussian mean=0, variance=1
 Optimisation        :L2(Weight Decay) | none
 
-added features      :Added choice for initialization tequnique (class argument)
+added features      :Added choice between initialization tequniques (class argument)
                     :Added all_zero_initializer weight,bias init tequnique
+                    :Added L1 optimisation + no optimisation
+                    :Added choice between optimisation tequniques (SGD argument)
+                    :Added Print Results in file
+                    :Added Training Process loader
+                    :Added neuron choice + tanh neurons
 
--
-
+known issues        :L1 optimisation
+                    :warning using tanh
 """
 
 #### Libraries
 # Standard library
+from __future__ import print_function
 import json
 import random
 import sys
-
+import time
+import sys
+import math
 # Third-party libraries
 import numpy as np
-
-
+np.seterr(all='ignore')
+neurons='' #sigmoid | tanh
 #### Define the quadratic and cross-entropy cost functions
 
 class QuadraticCost:
@@ -45,8 +53,10 @@ class QuadraticCost:
     @staticmethod
     def delta(z, a, y):
         """Return the error delta from the output layer."""
-        return (a-y) * sigmoid_prime_vec(z)
-
+        if neuron_type=='sigmoid':
+            return (a-y) * sigmoid_prime_vec(z)
+        else:
+            return (a-y) * tanh_prime_vec(z)
 
 class CrossEntropyCost:
 
@@ -80,7 +90,7 @@ class CrossEntropyCost:
 #### Main Network class
 class Network():
 
-    def __init__(self, sizes, cost=CrossEntropyCost, initialization='default'):
+    def __init__(self, sizes, cost=CrossEntropyCost, initialization='default', neuron_type='sigmoid'):
         """The list ``sizes`` contains the number of neurons in the respective
         layers of the network.  For example, if the list was [2, 3, 1]
         then it would be a three-layer network, with the first layer
@@ -93,6 +103,8 @@ class Network():
         """
         self.num_layers = len(sizes)
         self.sizes = sizes
+        global neurons
+        neurons=neuron_type
 #########################################################################
         if initialization=='default':
             self.default_weight_initializer()
@@ -100,6 +112,7 @@ class Network():
             self.all_zero_initializer()
         else:
             self.large_weight_initializer()
+#########################################################################
         self.cost=cost
 
     def default_weight_initializer(self): #New Method!!!
@@ -137,20 +150,27 @@ class Network():
         self.weights = [np.random.randn(y, x) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
+#########################################################################
     def all_zero_initializer(self): #Same as before
         """Initialize the weights as well as the biases to zeros 
         """
         self.biases = [np.zeros((y, 1)) for y in self.sizes[1:]]
         self.weights = [np.zeros((y, x)) 
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
+#########################################################################
 
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
-        for b, w in zip(self.biases, self.weights):
-            a = sigmoid_vec(np.dot(w, a)+b)
+        if(neurons=='sigmoid'):
+            for b, w in zip(self.biases, self.weights):
+                a = sigmoid_vec(np.dot(w, a)+b)
+        else:
+            for b, w in zip(self.biases, self.weights):
+                a = tanh_vec(np.dot(w, a)+b)
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta, 
+            optimisation = 'L2',
             lmbda = 0.0, 
             evaluation_data=None, 
             monitor_evaluation_cost=False,
@@ -176,40 +196,59 @@ class Network():
         are empty if the corresponding flag is not set.
 
         """
+#########################################################################
+        sys.stdout.write('\r')
+        sys.stdout.write("Training Process: [%-20s] %d%%" % ('='*0, 0))
+        sys.stdout.flush()
+#########################################################################
+        resultF = open("tests.md", "a")
+        CpuTrainingTime=0
         if evaluation_data: n_data = len(evaluation_data)
         n = len(training_data)
         evaluation_cost, evaluation_accuracy = [], []
         training_cost, training_accuracy = [], []
         for j in xrange(epochs):
+            start=time.clock() #Any extra calculations will not be calculated as training time
             random.shuffle(training_data)
             mini_batches = [
                 training_data[k:k+mini_batch_size]
                 for k in xrange(0, n, mini_batch_size)]
             for mini_batch in mini_batches:
                 self.update_mini_batch(
-                    mini_batch, eta, lmbda, len(training_data))
-            print "__Epoch %s training complete__\t\t" % (j+1)
+                    mini_batch, eta, lmbda, optimisation, len(training_data))
+#########################################################################
+            sys.stdout.write('\r')
+            sys.stdout.write("Training Process: [%-20s] %d%%" % ('='*int(float(j+1)/epochs*20), (float(j+1)/epochs*100)))
+            sys.stdout.flush()
+            print ("__Epoch %s training complete__\t\t" % (j+1), file = resultF)
+            CpuTrainingTime+=time.clock()-start #Any extra calculations will not be calculated as training time
+#########################################################################
             if monitor_training_cost:
-                cost = self.total_cost(training_data, lmbda)
+                cost = self.total_cost(training_data, lmbda, optimisation)
                 training_cost.append(cost)
-                print "_Cost on training data: {}_\t\t".format(cost)
+                print ("_Cost on training data: {}_\t\t".format(cost), file = resultF)
             if monitor_training_accuracy:
                 accuracy = self.accuracy(training_data, convert=True)
                 training_accuracy.append(accuracy)
-                print "_Accuracy on training data: {} / {}_\t".format(
-                    accuracy, n)
+                print ("_Accuracy on training data: {} / {}_\t".format(
+                    accuracy, n), file = resultF)
             if monitor_evaluation_cost:
-                cost = self.total_cost(evaluation_data, lmbda, convert=True)
+                cost = self.total_cost(evaluation_data, lmbda, optimisation, convert=True)
                 evaluation_cost.append(cost)
-                print "_Cost on evaluation data: {}_\t".format(cost)
+                print ("_Cost on evaluation data: {}_\t".format(cost), file = resultF)
             if monitor_evaluation_accuracy:
                 accuracy = self.accuracy(evaluation_data)
                 evaluation_accuracy.append(accuracy)
-                print "_Accuracy on evaluation data: {} / {}_\t\t".format(
-                    self.accuracy(evaluation_data), n_data)
+                print ("_Accuracy on evaluation data: {} / {}_\t\t".format(
+                    self.accuracy(evaluation_data), n_data), file = resultF)
+#########################################################################
+        print ("###CPU Training Time:",CpuTrainingTime, file = resultF)
+        print ('\n---------------------------------------------------------', file = resultF)
+        print ('---------------------------------------------------------', file = resultF)
+        resultF.close()
         return evaluation_cost, evaluation_accuracy, training_cost, training_accuracy
 
-    def update_mini_batch(self, mini_batch, eta, lmbda, n):
+    def update_mini_batch(self, mini_batch, eta, lmbda, optimisation, n):
         """Update the network's weights and biases by applying gradient
         descent using backpropagation to a single mini batch.  The
         ``mini_batch`` is a list of tuples ``(x, y)``, ``eta`` is the
@@ -223,8 +262,17 @@ class Network():
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-        self.weights = [(1-eta*(lmbda/n))*w-(eta/len(mini_batch))*nw 
+#########################################################################
+        if optimisation=='L2':
+            self.weights = [(1-eta*(lmbda/n))*w-(eta/len(mini_batch))*nw
+                            for w, nw in zip(self.weights, nabla_w)]
+        elif optimisation=='L1':
+            self.weights = [(1-eta*(lmbda/n))*np.linalg.norm(w,ord='fro')-(eta/len(mini_batch))*nw
+                            for w, nw in zip(self.weights, nabla_w)]
+        else: #none
+            self.weights = [w-(eta/len(mini_batch))*nw 
                         for w, nw in zip(self.weights, nabla_w)]
+#########################################################################
         self.biases = [b-(eta/len(mini_batch))*nb 
                        for b, nb in zip(self.biases, nabla_b)]
 
@@ -239,11 +287,18 @@ class Network():
         activation = x
         activations = [x] # list to store all the activations, layer by layer
         zs = [] # list to store all the z vectors, layer by layer
-        for b, w in zip(self.biases, self.weights):
-            z = np.dot(w, activation)+b
-            zs.append(z)
-            activation = sigmoid_vec(z)
-            activations.append(activation)
+        if neurons=='sigmoid':
+            for b, w in zip(self.biases, self.weights):
+                z = np.dot(w, activation)+b
+                zs.append(z)
+                activation = sigmoid_vec(z)
+                activations.append(activation)
+        else:
+            for b, w in zip(self.biases, self.weights):
+                z = np.dot(w, activation)+b
+                zs.append(z)
+                activation = tanh_vec(z)
+                activations.append(activation)
         # backward pass
         delta = (self.cost).delta(zs[-1], activations[-1], y)
         nabla_b[-1] = delta
@@ -254,12 +309,20 @@ class Network():
         # second-last layer, and so on.  It's a renumbering of the
         # scheme in the book, used here to take advantage of the fact
         # that Python can use negative indices in lists.
-        for l in xrange(2, self.num_layers):
-            z = zs[-l]
-            spv = sigmoid_prime_vec(z)
-            delta = np.dot(self.weights[-l+1].transpose(), delta) * spv
-            nabla_b[-l] = delta
-            nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
+        if neurons=='sigmoid':
+            for l in xrange(2, self.num_layers):
+                z = zs[-l]
+                spv = sigmoid_prime_vec(z)
+                delta = np.dot(self.weights[-l+1].transpose(), delta) * spv
+                nabla_b[-l] = delta
+                nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
+        else:
+            for l in xrange(2, self.num_layers):
+                z = zs[-l]
+                spv = tanh_prime_vec(z)
+                delta = np.dot(self.weights[-l+1].transpose(), delta) * spv
+                nabla_b[-l] = delta
+                nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
         return (nabla_b, nabla_w)
 
     def accuracy(self, data, convert=False):
@@ -293,7 +356,7 @@ class Network():
                         for (x, y) in data]
         return sum(int(x == y) for (x, y) in results)
 
-    def total_cost(self, data, lmbda, convert=False):
+    def total_cost(self, data, lmbda, optimisation, convert=False):
         """Return the total cost for the data set ``data``.  The flag
         ``convert`` should be set to False if the data set is the
         training data (the usual case), and to True if the data set is
@@ -305,8 +368,16 @@ class Network():
             a = self.feedforward(x)
             if convert: y = vectorized_result(y)
             cost += self.cost.fn(a, y)/len(data)
-        cost += 0.5*(lmbda/len(data))*sum(
-            np.linalg.norm(w)**2 for w in self.weights)
+#########################################################################
+        if optimisation=='L2':
+            cost += 0.5*(lmbda/len(data))*sum(
+                np.linalg.norm(w)**2 for w in self.weights)
+        elif optimisation=='L1':
+            cost += 0.5*(lmbda/len(data))*sum(
+                abs(np.linalg.norm(w)) for w in self.weights)
+        else:
+            cost += 0.5*(lmbda/len(data))
+#########################################################################
         return cost
 
     def save(self, filename):
@@ -345,6 +416,19 @@ def vectorized_result(j):
     e[j] = 1.0
     return e
 
+#########################################################################
+def tanh(z):
+    """The tanh sigmoid function """
+    return np.tanh(z)
+tanh_vec = np.vectorize(tanh)
+
+def tanh_prime(z):
+    """Derivative of the tanh sigmoid function."""
+    return 1.0-(tanh(z)*tanh(z))
+
+tanh_prime_vec = np.vectorize(tanh_prime)
+
+#########################################################################
 def sigmoid(z):
     """The sigmoid function."""
     return 1.0/(1.0+np.exp(-z))
