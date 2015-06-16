@@ -11,6 +11,7 @@ function usually called by our neural network code.
 #### Libraries
 # Standard library
 import cPickle
+import os.path
 import gzip
 
 # Third-party libraries
@@ -39,11 +40,13 @@ def load_data():
     That's done in the wrapper function ``load_data_wrapper()``, see
     below.
     """
-    f = gzip.open('../../../data/mnist.pkl.gz', 'rb')
+
+    if (os.path.isfile('../../../data/mnist.pkl.gz')):
+        f = gzip.open('../../../data/mnist.pkl.gz', 'rb')
     training_data, validation_data, test_data = cPickle.load(f)
     f.close()
     #########################################################################
-    # print("Data Sucessfully Loaded")
+    #print'Data Sucessfully Loaded'
     #########################################################################
     return (training_data, validation_data, test_data)
 
@@ -80,7 +83,6 @@ def load_data_wrapper():
     # print '\n__Size of Training Data List:__\t',len(training_data)
     # print '__Size of Validation Data List:__\t',len(validation_data)
     # print 'Size of Test Data List:\t\t',len(test_data)
-    print '---------------------------------------------------------'
     #########################################################################
     return (training_data, validation_data, test_data)
 

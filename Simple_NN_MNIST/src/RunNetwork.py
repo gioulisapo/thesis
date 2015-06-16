@@ -1,35 +1,221 @@
-__author__ = "Apostolis Gioulis"
-
-import mnist_loader
+import csv
 import network
-import timeit
+import time
+import mnist_loader
 
 
-print '# Test'
-Hidden_Layers=[30];
+#Setup Network
+Hidden_Layers=[30,100,30]
 
-print '* The network consist of:',len(Hidden_Layers) ,'Hidden Layers'
-for i in range(0,len(Hidden_Layers)):
-	print '\t* Hidden Layer', i+1,'consist of:',Hidden_Layers[i],'hidden units'
+#Add input.output layers
 Layers=[784]+Hidden_Layers+[10]
-epochs=3
-Mini_Batch_Size=5;
+init='all_zero' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='none' #L1 | L2 | none
+lmbda=0
+Mini_Batch_Size=20;
 Learning_Rate=0.25;
-print '\n* The network will run for:',epochs ,'epochs'
-print '* Learning Algorithm: Stochastic Gradient Descent with Mini batch size of:',Mini_Batch_Size, 'and Learning Rate:',Learning_Rate
+Cost_Function=network.QuadraticCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
 
-start = timeit.default_timer()
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
 training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 #Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
-net = network.Network(Layers)
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
 #SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
 
-net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, test_data=test_data)
-stop = timeit.default_timer()
-print '\n---------------------------------------------------------'
-seconds=stop - start
-m, s = divmod(seconds, 60)
-h, m = divmod(m, 60)
-print "### Time ran: %d:%02d:%02d" % (h, m, s)
-print '\n---------------------------------------------------------'
-print '---------------------------------------------------------'
+#Setup Network
+Hidden_Layers=[30,100,30]
+
+#Add input.output layers
+Layers=[784]+Hidden_Layers+[10]
+
+init='large' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='L2' #L1 | L2 | none
+lmbda=5
+Mini_Batch_Size=20;
+Learning_Rate=0.25;
+Cost_Function=network.QuadraticCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
+
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
+training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+#Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
+#SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+
+#Setup Network
+Hidden_Layers=[30,100,30]
+
+#Add input.output layers
+Layers=[784]+Hidden_Layers+[10]
+
+init='default' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='none' #L1 | L2 | none
+lmbda=0
+Mini_Batch_Size=20;
+Learning_Rate=0.25;
+Cost_Function=network.QuadraticCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
+
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
+training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+#Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
+#SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+
+
+#Setup Network
+Hidden_Layers=[30,100,30]
+
+#Add input.output layers
+Layers=[784]+Hidden_Layers+[10]
+
+init='all_zero' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='none' #L1 | L2 | none
+lmbda=0
+Mini_Batch_Size=20;
+Learning_Rate=0.25;
+Cost_Function=network.QuadraticCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
+
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
+training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+#Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
+#SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+
+#Setup Network
+Hidden_Layers=[30,100,30]
+
+#Add input.output layers
+Layers=[784]+Hidden_Layers+[10]
+
+init='large' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='L2' #L1 | L2 | none
+lmbda=5
+Mini_Batch_Size=20;
+Learning_Rate=0.25;
+Cost_Function=network.CrossEntropyCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
+
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
+training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+#Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
+#SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+
+#Setup Network
+Hidden_Layers=[30,100,30]
+
+#Add input.output layers
+Layers=[784]+Hidden_Layers+[10]
+
+init='default' #default | large | all_zero
+neurons='sigmoid' #sigmoid | tanh
+#Setup Learning Algorithm
+epochs=30
+Optimisation_technique='none' #L1 | L2 | none
+lmbda=0
+Mini_Batch_Size=20;
+Learning_Rate=0.25;
+Cost_Function=network.CrossEntropyCost() #network2.CrossEntropyCost() | network2.QuadraticCost()
+
+#Prints
+resultF = open('results.csv', 'at')
+try:
+    writer = csv.writer(resultF)
+    writer.writerow(['Network:', Layers,'Neurons:', neurons])
+    writer.writerow(['Epochs:', epochs,'Mini_Batch_Size:', Mini_Batch_Size])
+    writer.writerow(['Init:', init,'Learning_Rate:', Learning_Rate])
+    writer.writerow(['Optimisation:', Optimisation_technique,lmbda])
+    writer.writerow(['Cost Function:',  Cost_Function.__class__.__name__])
+    writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
+finally:
+	resultF	.close()
+    
+training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+#Called Network[Sizeof(input layer), Sizeof(hidden_layer_1), ... , Sizeof(Output_Layer)]
+net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
+#SGD(Taining_Data, epochs, Mini_Batch_Size, Learning_Rate,test_data=Test_Data_For_Evaluation )
+net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Optimisation_technique, lmbda, evaluation_data=validation_data,\
+	monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
