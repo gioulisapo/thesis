@@ -19,7 +19,6 @@ added features      :Added choice between initialization tequniques (class argum
                     :Added neuron choice + tanh neurons
 
 known issues        :L1 optimisation
-                    :error in tanh
 """
 
 #### Libraries
@@ -32,7 +31,7 @@ import csv
 import math
 # Third-party libraries
 import numpy as np
-np.seterr(all='ignore')
+#np.seterr(all='ignore')
 neurons='' #sigmoid | tanh
 #### Define the quadratic and cross-entropy cost functions
 
@@ -202,7 +201,7 @@ class Network():
         sys.stdout.write("Training Process: [%-20s] %d%%" % ('='*0, 0))
         sys.stdout.flush()
 
-        resultF = open('results.csv', 'a')
+        resultF = open('Results.csv', 'a')
         writer = csv.writer(resultF)
         writer.writerow(['Epoch','Training Data Cost','Traning Data Accuracy','Evaluation Data Cost','Evaluation Data Accuracy','Time'])
 #########################################################################
@@ -287,7 +286,7 @@ class Network():
             self.weights = [(1-eta*(lmbda/n))*w-(eta/len(mini_batch))*nw
                             for w, nw in zip(self.weights, nabla_w)]
         elif optimisation=='L1':
-            self.weights = [(1-eta*(lmbda/n))*np.linalg.norm(w,ord='fro')-(eta/len(mini_batch))*nw
+            self.weights = [(1-eta*(lmbda/n))*np.abs(w)-(eta/len(mini_batch))*nw
                             for w, nw in zip(self.weights, nabla_w)]
         else: #none
             self.weights = [w-(eta/len(mini_batch))*nw 

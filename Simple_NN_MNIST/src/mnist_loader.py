@@ -6,6 +6,8 @@ A library to load the MNIST image data.  For details of the data
 structures that are returned, see the doc strings for ``load_data``
 and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
 function usually called by our neural network code.
+
+added features      :Added Download dataset option (in case it doesn't already exist)
 """
 
 #### Libraries
@@ -40,9 +42,13 @@ def load_data():
     That's done in the wrapper function ``load_data_wrapper()``, see
     below.
     """
-
-    if (os.path.isfile('../../../data/mnist.pkl.gz')):
-        f = gzip.open('../../../data/mnist.pkl.gz', 'rb')
+    minstPath='../../../data/mnist.pkl.gz'
+    if (os.path.isfile(minstPath)!=True):
+        import urllib
+        origin = ('http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz')
+        print 'Downloading data from %s' % origin
+        urllib.urlretrieve(origin, minstPath)
+    f = gzip.open(minstPath, 'rb')
     training_data, validation_data, test_data = cPickle.load(f)
     f.close()
     #########################################################################
