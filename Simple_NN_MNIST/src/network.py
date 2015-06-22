@@ -31,7 +31,8 @@ import csv
 import math
 # Third-party libraries
 import numpy as np
-#np.seterr(all='ignore')
+np.seterr(all='ignore')
+
 neurons='' #sigmoid | tanh
 #### Define the quadratic and cross-entropy cost functions
 
@@ -450,7 +451,8 @@ tanh_prime_vec = np.vectorize(tanh_prime)
 #########################################################################
 def sigmoid(z):
     """The sigmoid function."""
-    return 1.0/(1.0+np.exp(-z))
+    value=np.float64(1.0/(1.0+np.float64(np.exp(-z))))
+    return value
 
 sigmoid_vec = np.vectorize(sigmoid)
 
