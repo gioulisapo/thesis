@@ -1,4 +1,5 @@
 #!/bin/bash
+#tested on Fedora_21, Ubuntu_14.04LTS
 green='\033[0;32m'
 orange='\033[0;33m'
 red='\033[0;31m'
@@ -58,9 +59,9 @@ if [[ $result != "" ]]; then
 	read -p "Enter your choice [ 1 -4 ] " choice
 	case $choice in
 		1)
-			sudo dnf insall python-devel;
-			sudo dnf install f2py;
- 			sudo dnf install numpy scipy python-matplotlib ipython python-pandas sympy python-nose blas blas-devel python-pip
+			sudo yum insall python-devel;
+			sudo yum install f2py;
+ 			sudo yum install numpy scipy python-matplotlib ipython python-pandas sympy python-nose blas blas-devel python-pip
 			sudo pip install Theano;sudo pip install --upgrade theano;
 			echo -e "${green}${bold}\nDone${normal}${NC}\tNotes: http://deeplearning.net/software/theano/install.html"
 			exit
@@ -78,6 +79,7 @@ if [[ $result != "" ]]; then
 		4)
 			exit;;
 		esac
+		echo $(check)
 else
 	echo -e "${green}${bold}\nDone:${normal}${NC}\tEverything seems to be installed properly";
 fi
