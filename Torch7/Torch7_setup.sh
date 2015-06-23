@@ -14,9 +14,10 @@ cd ~/torch; ./install.sh
 #2) Edit ~/torch/install.sh (49): cmake .. -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=Release -DWITH_LUAJIT21=ON
 #						------>c: cmake .. -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=Release
 # Run ~/torch/install.sh
+# lua5.1 must then be installed ubuntu: sudo apt-get install lua5.1
 
 #------------install-extras----------------------------------------------------------------------------------
-luarocks install image  && luarocks install nnx      # lots of extra neural-net modules
+luarocks install image --local && luarocks install nnx --local && luarocks install dp --local   # lots of extra neural-net modules
 
 #-------------------uninstall----------------------------------------------------------------------------------
 #sudo rm -rf ~/torch

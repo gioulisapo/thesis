@@ -5,7 +5,9 @@ A library to load the MNIST image data.  For details of the data
 structures that are returned, see the doc strings for ``load_data``
 and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
 function usually called by our neural network code.
-added features      :Added Download dataset option (in case it doesn't already exist)
+
+Added features      :Added Download dataset option (in case it doesn't already exist)
+                    :Added Downlad Loader using clint
 """
 
 #### Libraries
@@ -13,9 +15,10 @@ added features      :Added Download dataset option (in case it doesn't already e
 import cPickle
 import os.path
 import gzip
-
 # Third-party libraries
 import numpy as np
+import requests
+from clint.textui import progress
 
 def load_data():
     """Return the MNIST data as a tuple containing the training data,
@@ -35,16 +38,25 @@ def load_data():
     helpful to modify the format of the ``training_data`` a little.
     That's done in the wrapper function ``load_data_wrapper()``, see
     below.
+
+    If it doesn't exist, the file is downloaded
     """
     minstPath='../../../data/mnist.pkl.gz'
+    data_path='../../../data/'
     if (os.path.isfile(minstPath)!=True):
-        import urllib
-        origin = ('http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz')
-        print 'Downloading data from %s' % origin
-        urllib.urlretrieve(origin, minstPath)
-    f = gzip.open(minstPath, 'rb')
-    training_data, validation_data, test_data = cPickle.load(f)
-    f.close()
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
+        print 'MNIST dataset is missing. Beginning Download'
+        r = requests.get('http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz', stream=True)
+        with open(minstPath, 'wb') as f:
+            total_length = int(r.headers.get('content-length'))
+            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+        f = gzip.open(minstPath, 'rb')
+        training_data, validation_data, test_data = cPickle.load(f)
+        f.close()
     #########################################################################
     #print'Data Sucessfully Loaded'
     #########################################################################
@@ -91,3 +103,6 @@ def vectorized_result(j):
     e = np.zeros((10, 1))
     e[j] = 1.0
     return e
+
+
+load_data()

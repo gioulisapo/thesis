@@ -1,4 +1,4 @@
 numpy
 scikit-learn	: http://scikit-learn.org/stable/install.html
 scipy			: 
-bigfloat, mpfr-devel (debian: libmpfr-dev)
+mpfr-devel (debian: libmpfr-dev), clint

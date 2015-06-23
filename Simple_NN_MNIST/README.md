@@ -1,3 +1,9 @@
+# Comments for the altered Version
+## by Apostolis Gioulis
+
+* All data will be saved in the __(../../../data/)__ folder
+	* Data will be downloaded if it doesn't exist (added feature) + download progress
+
 # Code samples for "Neural Networks and Deep Learning"
 
 This repository contains code samples for my (forthcoming) book on

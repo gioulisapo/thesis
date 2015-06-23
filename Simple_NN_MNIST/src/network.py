@@ -1,6 +1,8 @@
 """network.py
 ~~~~~~~~~~~~~~
 
+Neural Network implemented in Python using numpy
+
 Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
                      Gradients are calculated using backpropagation
 Neurons             :Sigmoid | tanh
