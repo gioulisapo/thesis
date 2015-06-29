@@ -1,14 +1,20 @@
-"""
-mnist_loader
-~~~~~~~~~~~~
-A library to load the MNIST image data.  For details of the data
-structures that are returned, see the doc strings for ``load_data``
-and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
-function usually called by our neural network code.
+"""mnist_loader.py
 
-Added features      :Added Download dataset option (in case it doesn't already exist)
-                    :Added Downlad Loader using clint
+    A library to load the MNIST image data.  For details of the data
+    structures that are returned, see the doc strings for ``load_data``
+    and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
+    function usually called by our neural network code.
+
+    Implemented in Python using numpy, closely based on code of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/mnist_loader.py)
+
+    Almost all aditions to the original dicument are between comment strings (#########################################################################)
+    Added features (Not available in the original code od M.Nielsen)
+        Added Download dataset option (in case it doesn't already exist)
+        Added Downlad Loader using clint
+        
 """
+
+__author__ = "M. Nielsen, Apostolos Gioulis"
 
 #### Libraries
 # Standard library
@@ -54,12 +60,9 @@ def load_data():
                 if chunk:
                     f.write(chunk)
                     f.flush()
-        f = gzip.open(minstPath, 'rb')
-        training_data, validation_data, test_data = cPickle.load(f)
-        f.close()
-    #########################################################################
-    #print'Data Sucessfully Loaded'
-    #########################################################################
+    f = gzip.open(minstPath, 'rb')
+    training_data, validation_data, test_data = cPickle.load(f)
+    f.close()
     return (training_data, validation_data, test_data)
 
 def load_data_wrapper():
@@ -88,11 +91,6 @@ def load_data_wrapper():
     validation_data = zip(validation_inputs, va_d[1])
     test_inputs = [np.reshape(x, (784, 1)) for x in te_d[0]]
     test_data = zip(test_inputs, te_d[1])
-    #########################################################################
-    # print '\n__Size of Training Data List:__\t',len(training_data)
-    # print '__Size of Validation Data List:__\t',len(validation_data)
-    # print 'Size of Test Data List:\t\t',len(test_data)
-    #########################################################################
     return (training_data, validation_data, test_data)
 
 def vectorized_result(j):
@@ -103,6 +101,3 @@ def vectorized_result(j):
     e = np.zeros((10, 1))
     e[j] = 1.0
     return e
-
-
-load_data()

@@ -1,27 +1,42 @@
 """network.py
-~~~~~~~~~~~~~~
 
-Neural Network implemented in Python using numpy
+    A module to implement the stochastic gradient descent learning
+    algorithm for a feedforward neural network.  Gradients are calculated
+    using backpropagation.
 
-Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
-                     Gradients are calculated using backpropagation
-Neurons             :Sigmoid | tanh
-Loss functions      :Quadradic Loss function | Cross-Entropy
-W initialization    :Random, (Gaussian mean=0, variance=1)/sqrt(Number_Of_Neuron_Connection_Inputs) | Same as network1
-b initialization    :Random, Gaussian mean=0, variance=1
-Optimisation        :L2(Weight Decay) | none
+    Implemented in Python using numpy based on the NN implementation 
+    of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network2.py)
 
-added features      :Added choice between initialization tequniques (class argument)
-                    :Added all_zero_initializer weight,bias init tequnique
-                    :Added L1 optimisation + no optimisation
-                    :Added choice between optimisation tequniques (SGD argument)
-                    :Added Print Results in file
-                    :Added Print in cvs format
-                    :Added Training Process loader
-                    :Added neuron choice + tanh neurons
+    The Module implments the following algorithms:
+        Learning algorithm  :Stochastic gradient descentfor a feedforward neural network.
+                             Gradients are calculated using backpropagation
+        Neurons             :Sigmoid | tanh
+        Loss functions      :Quadradic Loss function | Cross-Entropy
+        W initialization    :Random, (Gaussian mean=0, variance=1)/sqrt(Number_Of_Neuron_Connection_Inputs) | Same as network1
+        b initialization    :Random, Gaussian mean=0, variance=1
+        Regularization        :L2(Weight Decay) | none
 
-known issues        :L1 optimisation
+    Usage Example:
+        net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons) #Create Network
+        net.SGD(training_data, epochs, Mini_Batch_Size, Learning_Rate, Regularization_technique, lmbda, evaluation_data=validation_data,\
+            monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True) #Train Network
+
+    Almost all aditions to the original dicument are between comment strings (#########################################################################)
+    Added features (Not available in the original code od M.Nielsen)
+        : Added choice between initialization tequniques (class argument)
+        : Added all_zero_initializer weight,bias init tequnique
+        : Added choice between Regularization (SGD argument)
+        : Added Print Results in file (csv format)
+        : Added Training Process loader
+        : Added neuron choice + tanh neurons
+        : Added timing of the training process
+
+    Known issues
+        Overflows Occur using tanh function while training Cifar-10 dataset in exp():431
+        No Visible improvement appears to be made while training NN for the cifar-10 dataset
+        
 """
+__author__ = "M. Nielsen, Apostolos Gioulis"
 
 #### Libraries
 # Standard library
@@ -33,7 +48,7 @@ import csv
 import math
 # Third-party libraries
 import numpy as np
-np.seterr(all='ignore')
+# np.seterr(all='ignore')
 
 neurons='' #sigmoid | tanh
 #### Define the quadratic and cross-entropy cost functions
@@ -246,28 +261,10 @@ class Network():
             sys.stdout.write('\r')
             sys.stdout.write("Training Process: [%-20s] %d%%" % ('='*int(float(j+1)/epochs*20), (float(j+1)/epochs*100)))
             sys.stdout.flush()
-            
-#########################################################################
-            # if monitor_training_cost:
-            #     cost = self.total_cost(training_data, lmbda, optimisation)
-            #     training_cost.append(cost)
-            #     print '_Cost on training data: {}_\t\t'.format(cost)
-            # if monitor_training_accuracy:
-            #     accuracy = self.accuracy(training_data, convert=True)
-            #     training_accuracy.append(accuracy)
-            #     print '_Accuracy on training data: {} / {}_\t'.format(accuracy, n)
-            # if monitor_evaluation_cost:
-            #     cost = self.total_cost(evaluation_data, lmbda, optimisation, convert=True)
-            #     evaluation_cost.append(cost)
-            #     print "_Cost on evaluation data: {}_\t".format(cost)
-            # if monitor_evaluation_accuracy:
-            #     accuracy = self.accuracy(evaluation_data)
-            #     evaluation_accuracy.append(accuracy)
-            #     print "_Accuracy on evaluation data: {} / {}_\t\t".format(self.accuracy(evaluation_data), n_data)
-#########################################################################
         writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
         writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
         resultF.close()
+#########################################################################    
         return evaluation_cost, evaluation_accuracy, training_cost, training_accuracy
 
     def update_mini_batch(self, mini_batch, eta, lmbda, optimisation, n):
@@ -288,9 +285,9 @@ class Network():
         if optimisation=='L2':
             self.weights = [(1-eta*(lmbda/n))*w-(eta/len(mini_batch))*nw
                             for w, nw in zip(self.weights, nabla_w)]
-        elif optimisation=='L1':
-            self.weights = [(1-eta*(lmbda/n))*np.abs(w)-(eta/len(mini_batch))*nw
-                            for w, nw in zip(self.weights, nabla_w)]
+        # elif optimisation=='L1':
+        #     self.weights = [(1-eta*(lmbda/n))*np.abs(w)-(eta/len(mini_batch))*nw
+        #                     for w, nw in zip(self.weights, nabla_w)]
         else: #none
             self.weights = [w-(eta/len(mini_batch))*nw 
                         for w, nw in zip(self.weights, nabla_w)]
@@ -325,14 +322,8 @@ class Network():
         delta = (self.cost).delta(zs[-1], activations[-1], y)
         nabla_b[-1] = delta
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
-        # Note that the variable l in the loop below is used a little
-        # differently to the notation in Chapter 2 of the book.  Here,
-        # l = 1 means the last layer of neurons, l = 2 is the
-        # second-last layer, and so on.  It's a renumbering of the
-        # scheme in the book, used here to take advantage of the fact
-        # that Python can use negative indices in lists.
         if neurons=='sigmoid':
-            for l in xrange(2, self.num_layers):
+            for l in xrange(2, self.num_layers): #l = 1 means the last layer of neurons, l = 2 is the second-last layer, and so on.
                 z = zs[-l]
                 spv = sigmoid_prime_vec(z)
                 delta = np.dot(self.weights[-l+1].transpose(), delta) * spv
@@ -394,9 +385,9 @@ class Network():
         if optimisation=='L2':
             cost += 0.5*(lmbda/len(data))*sum(
                 np.linalg.norm(w)**2 for w in self.weights)
-        elif optimisation=='L1':
-            cost += 0.5*(lmbda/len(data))*sum(
-                abs(np.linalg.norm(w)) for w in self.weights)
+        # elif optimisation=='L1':
+        #     cost += 0.5*(lmbda/len(data))*sum(
+        #         abs(np.linalg.norm(w)) for w in self.weights)
         else:
             cost += 0.5*(lmbda/len(data))
 #########################################################################

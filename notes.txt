@@ -1,0 +1,2 @@
+Ena readme.md to opoio na perigrafei pws trexei (compact depndencies)
+Extract pydocs using sphinx	

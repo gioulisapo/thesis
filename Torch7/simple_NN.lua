@@ -1,5 +1,14 @@
 require 'dp'
 
+
+-- To run: th simple_NN.lua
+--In case of a an error in mode  w at /tmp/luarocks_torch-scm-1-8964/torch7/lib/TH/THDiskFile.c:484 while training the cifar-10 dataset:--
+--The error appeared presumably due to VM problems. The error can be easily bapassed by tampering the--
+--~/.luarocks/share/lua/5.1/dp/observer/filelogger.lua file--
+   --GOTO function self._save_dir = paths.concat(self._save_dir, subject_path) line:25--
+   --REPLACE IT WIHT: self._save_dir = $HOME'/NN/'--
+   --FINALLY: create /home/user/NN/log/ folder in your system--
+----
 --[[command line arguments]]--
 
 cmd = torch.CmdLine()
@@ -20,7 +29,7 @@ cmd:option('--maxEpoch', 100, 'maximum number of epochs to run')
 cmd:option('--maxTries', 30, 'maximum number of epochs to try to find a better local minima for early-stopping')
 cmd:option('--dropout', false, 'apply dropout on hidden neurons')
 cmd:option('--batchNorm', false, 'use batch normalization. dropout is mostly redundant with this')
-cmd:option('--dataset', 'Mnist', 'which dataset to use : Mnist | NotMnist | Cifar10 | Cifar100')
+cmd:option('--dataset', 'Cifar10', 'which dataset to use : Mnist | NotMnist | Cifar10 | Cifar100')
 cmd:option('--standardize', false, 'apply Standardize preprocessing')
 cmd:option('--zca', false, 'apply Zero-Component Analysis whitening')
 cmd:option('--lecunlcn', false, 'apply Yann LeCun Local Contrast Normalization')

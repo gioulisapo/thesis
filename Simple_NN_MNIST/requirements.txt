@@ -1,4 +1,0 @@
-numpy
-scikit-learn	: http://scikit-learn.org/stable/install.html
-scipy			: 
-mpfr-devel (debian: libmpfr-dev), clint
