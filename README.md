@@ -1,7 +1,7 @@
 # Deep Learning Thesis Project
 ## by: Apostolis Gioulis
 
-The projects purpose is to create a work-flow using some of the available tools used in modern Deep Learning algorithm Development. To be specific, Theano and Torch7 libraries are used as well as a custom python implementation using Python. 
+The projects purpose is to create a work-flow using some of the available tools used in modern Deep Learning algorithm Development. To be specific, Theano and Torch7 libraries are used as well as a custom python implementation using Python.
 
 ## Implementations
 There are 3 folders containing 3 different implementations as well as some other modules of the supportive nature:
@@ -18,8 +18,8 @@ In order for the numpy implementation to run successfully the following python p
 	* requests
 
 	They can be installed by using the ```sudo pip install <package_name>``` command
-    
-    
+
+
 * __theano/:__ In order for the theano implementation to run successfully:
 theano library must be installed. To do so either:
 	* Use the automated tool ```theano/theano_setup.sh``` developed for the purposes of the work-flow (tested in fedora21, ubuntu 14.04)
@@ -28,7 +28,7 @@ theano library must be installed. To do so either:
 	All of the aforementioned python packages are required as well.
 * __Torch7:__
 In order for the torch7 NN implementation to run torch7 must be installed in the users system. To do so:
-	* Use the automated tool ```Torch7/torch7_setup.sh``` that in turn uses the [official installation tool](https://github.com/torch/ezinstall). If the script does not work some debugging options are listed as comments in the script. The script in turn requires 
+	* Use the automated tool ```Torch7/torch7_setup.sh``` that in turn uses the [official installation tool](https://github.com/torch/ezinstall). If the script does not work some debugging options are listed as comments in the script. The script in turn requires
 		* cmake
 		* curl
 
@@ -41,7 +41,7 @@ In order for the torch7 NN implementation to run torch7 must be installed in the
 * __Simple_NN_MNIST/:__
 	* Configure: By tampering with the  Simple_NN_MNIST/src/network.ini file
 	* Run: ```./Simple_NN_MNIST/src/run_network.py```
-* __theano/:__ 
+* __theano/:__
 	* Configure: By tampering with the  theano/src/network.ini file
 	* Run: ```./theano/src/run_network.py```
 * __Torch7:__:
