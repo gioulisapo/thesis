@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''T_run_network.py
 ~~~~~~~~~~~~~~
+
     This module is used to build and train neural Neworks using a numpy NN implementation ./network
     based on the work of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning)
     using ./cifar_loader.py | ./mnist_loader.py files to load the appropriate datset
@@ -11,7 +12,7 @@ __author__ = "Apostolos Gioulis"
 #Imports
 import csv
 import configparser
-import network
+import T_network
 from T_network import sigmoid, tanh, ReLU, Network
 from T_network import FullyConnectedLayer, SoftmaxLayer
 import time
@@ -81,10 +82,10 @@ def main():
     Learning_Rate = float(config['Learning-Training']['Learning_Rate'])
 
     if dataset=='cifar_10':
-        training_data, validation_data, test_data = network.load_data_cifar()
+        training_data, validation_data, test_data = T_network.load_data_cifar()
         Input_Neurons=3072
     else: #dataset
-        training_data, validation_data, test_data = network.load_data_mnist()
+        training_data, validation_data, test_data = T_network.load_data_mnist()
         Input_Neurons=784
     if Neurons=='sigmoid':
         Neurons=sigmoid

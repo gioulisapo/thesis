@@ -219,7 +219,7 @@ class Network():
         sys.stdout.write("Training Process: [%-20s] %d%%" % ('='*0, 0))
         sys.stdout.flush()
 
-        resultF = open('Results.csv', 'a')
+        resultF = open('../Results.csv', 'a')
         writer = csv.writer(resultF)
         writer.writerow(['Epoch','Training Data Cost','Traning Data Accuracy','Evaluation Data Cost','Evaluation Data Accuracy','Time'])
 #########################################################################

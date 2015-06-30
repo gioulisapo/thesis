@@ -58,7 +58,7 @@ def main():
         training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 
     # Write Chosen Configuration for the upcoming experiment
-    resultF = open('Results.csv', 'at')
+    resultF = open('../Results.csv', 'at')
     try:
         writer = csv.writer(resultF)
         writer.writerow(['Network:', Layers,'Neurons:', neurons])
