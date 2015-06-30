@@ -1,10 +1,10 @@
 """network.py
-
+~~~~~~~~~~~~~~
     A module to implement the stochastic gradient descent learning
     algorithm for a feedforward neural network.  Gradients are calculated
     using backpropagation.
 
-    Implemented in Python using numpy based on the NN implementation 
+    Implemented in Python using numpy based on the NN implementation
     of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network2.py)
 
     The Module implments the following algorithms:
@@ -34,7 +34,7 @@
     Known issues
         Overflows Occur using tanh function while training Cifar-10 dataset in exp():431
         No Visible improvement appears to be made while training NN for the cifar-10 dataset
-        
+
 """
 __author__ = "M. Nielsen, Apostolos Gioulis"
 
@@ -147,7 +147,7 @@ class Network():
         """
 
         self.biases = [np.random.randn(y, 1) for y in self.sizes[1:]]
-        self.weights = [np.random.randn(y, x)/np.sqrt(x) 
+        self.weights = [np.random.randn(y, x)/np.sqrt(x)
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
     def large_weight_initializer(self):
@@ -164,15 +164,15 @@ class Network():
         instead.
         """
         self.biases = [np.random.randn(y, 1) for y in self.sizes[1:]]
-        self.weights = [np.random.randn(y, x) 
+        self.weights = [np.random.randn(y, x)
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
 #########################################################################
     def all_zero_initializer(self): #Same as before
-        """Initialize the weights as well as the biases to zeros 
+        """Initialize the weights as well as the biases to zeros
         """
         self.biases = [np.zeros((y, 1)) for y in self.sizes[1:]]
-        self.weights = [np.zeros((y, x)) 
+        self.weights = [np.zeros((y, x))
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 #########################################################################
 
@@ -186,13 +186,13 @@ class Network():
                 a = tanh_vec(np.dot(w, a)+b)
         return a
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, 
+    def SGD(self, training_data, epochs, mini_batch_size, eta,
             optimisation = 'L2',
-            lmbda = 0.0, 
-            evaluation_data=None, 
+            lmbda = 0.0,
+            evaluation_data=None,
             monitor_evaluation_cost=False,
             monitor_evaluation_accuracy=False,
-            monitor_training_cost=False, 
+            monitor_training_cost=False,
             monitor_training_accuracy=False):
         """Train the neural network using mini-batch stochastic gradient
         descent.  The ``training_data`` is a list of tuples ``(x, y)``
@@ -264,7 +264,7 @@ class Network():
         writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
         writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
         resultF.close()
-#########################################################################    
+#########################################################################
         return evaluation_cost, evaluation_accuracy, training_cost, training_accuracy
 
     def update_mini_batch(self, mini_batch, eta, lmbda, optimisation, n):
@@ -289,10 +289,10 @@ class Network():
         #     self.weights = [(1-eta*(lmbda/n))*np.abs(w)-(eta/len(mini_batch))*nw
         #                     for w, nw in zip(self.weights, nabla_w)]
         else: #none
-            self.weights = [w-(eta/len(mini_batch))*nw 
+            self.weights = [w-(eta/len(mini_batch))*nw
                         for w, nw in zip(self.weights, nabla_w)]
 #########################################################################
-        self.biases = [b-(eta/len(mini_batch))*nb 
+        self.biases = [b-(eta/len(mini_batch))*nb
                        for b, nb in zip(self.biases, nabla_b)]
 
     def backprop(self, x, y):
@@ -342,7 +342,7 @@ class Network():
         """Return the number of inputs in ``data`` for which the neural
         network outputs the correct result. The neural network's
         output is assumed to be the index of whichever neuron in the
-        final layer has the highest activation.  
+        final layer has the highest activation.
 
         The flag ``convert`` should be set to False if the data set is
         validation or test data (the usual case), and to True if the
@@ -362,7 +362,7 @@ class Network():
 
         """
         if convert:
-            results = [(np.argmax(self.feedforward(x)), np.argmax(y)) 
+            results = [(np.argmax(self.feedforward(x)), np.argmax(y))
                        for (x, y) in data]
         else:
             results = [(np.argmax(self.feedforward(x)), y)

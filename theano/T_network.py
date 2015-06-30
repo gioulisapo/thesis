@@ -1,9 +1,9 @@
-"""network.py
+"""T_network.py
 ~~~~~~~~~~~~~~
 A Theano-based program for training and running simple neural
 networks.
 
-Heavily Based on the NN implementation 
+Heavily Based on the NN implementation
 of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network3.py)
 
 Supports several layer types (fully connected, convolutional, max
@@ -20,11 +20,12 @@ http://deeplearning.net/tutorial/lenet.html ), from Misha Denil's
 implementation of dropout (https://github.com/mdenil/dropout ), and
 from Chris Olah (http://colah.github.io ).
 
-Added features      : Cifar-10 dataset support
-                    : Show dataset Download Progress
-                    : Added timing of the training process
-
-Known issues        : No Visible improvement appears to be made while training NN for the cifar-10 dataset
+Added features
+    - Cifar-10 dataset support
+    - Show dataset Download Progress
+    - Added timing of the training process
+Known issues
+    - No Visible improvement appears to be made while training NN for the cifar-10 dataset
 """
 
 __author__ = "M. Nielsen, Apostolos Gioulis"
@@ -91,13 +92,13 @@ def untar(fname, data_path):
 
 def load_data_cifar(cifar_path="../../data/cifar-10-batches-py"):
     '''
-        A method to load the Cifar-10 image data. The method, returns 3 tuples containing cifar-10 data
-        In particular, each one of the three results is a list containing 10,000
-        2-tuples ``(x, y)``.
-            ``x`` is a 3072-dimensional numpy.ndarray containing the input image.
-            ``y`` is a 10-dimensional numpy.ndarray representing the unit vector corresponding to the correct label for ``x``.
-        The cifar-10 data must me inside the $(data_path) folder (data/ folder is the same level as the root folder thesis/)
-        If not the data will be downloaded (while displaying download process) and then extracted in order to be loaded
+    A method to load the Cifar-10 image data. The method, returns 3 tuples containing cifar-10 data
+    In particular, each one of the three results is a list containing 10,000
+    2-tuples ``(x, y)``.
+        - ``x`` is a 3072-dimensional numpy.ndarray containing the input image.
+        - ``y`` is a 10-dimensional numpy.ndarray representing the unit vector corresponding to the correct label for ``x``.
+    The cifar-10 data must me inside the $(data_path) folder (data/ folder is the same level as the root folder thesis/)
+    If not the data will be downloaded (while displaying download process) and then extracted in order to be loaded
     '''
     cifar_tar = cifar_path.rstrip('cifar-10-batches-py')+'cifar-10-python.tar.gz'
     data_path=cifar_path.rstrip('cifar-10-batches-py')
@@ -107,17 +108,17 @@ def load_data_cifar(cifar_path="../../data/cifar-10-batches-py"):
         if os.path.isfile(cifar_tar):
             statinfo = os.stat(cifar_tar)
         if (os.path.isfile(cifar_tar)!=True) or (statinfo.st_size < 170498071): # if the data does not exist in it's tar.gz form download it
-            print 'Cifar-10 dataset is missing. Beginning Download ...'  # Start downloading data while displaying dowload process 
+            print 'Cifar-10 dataset is missing. Beginning Download ...'  # Start downloading data while displaying dowload process
             r = requests.get('http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz', stream=True)
             with open(cifar_tar, 'wb') as f:
                 total_length = int(r.headers.get('content-length'))
-                for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+                for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
                     if chunk:
                         f.write(chunk)
                         f.flush()
         untar(cifar_tar, data_path)
         os.remove(cifar_tar)
-    
+
     f=unpickle('../../data/cifar-10-batches-py/data_batch_1')
     v=unpickle('../../data/cifar-10-batches-py/data_batch_2')
     t=unpickle('../../data/cifar-10-batches-py/test_batch')
@@ -129,9 +130,9 @@ def load_data_cifar(cifar_path="../../data/cifar-10-batches-py"):
     test_data=tuple([np.float32(t.get('data')),t.get('labels')])
 
     def shared(data):
-        """Place the data into shared variables.  This allows Theano to copy
+        """
+        Place the data into shared variables.  This allows Theano to copy
         the data to the GPU, if one is available.
-
         """
         shared_x = theano.shared(
             np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
@@ -143,17 +144,19 @@ def load_data_cifar(cifar_path="../../data/cifar-10-batches-py"):
 
 def load_data_mnist(filename="../../data/mnist.pkl.gz"):
     '''
-        A method to load the MNSIT image data as a tuple containing the training data, the validation data, and the test data.
-        The ``training_data`` is returned as a tuple with two entries.
-            The first entry contains the actual training images.  This is a numpy ndarray with 50,000 entries.
-                Each entry is, in turn, a numpy ndarray with 784 values, representing the 28 * 28 = 784 pixels in a single MNIST image.
-            The second entry in the ``training_data`` tuple is a numpy ndarray containing 50,000 entries.
-                Those entries are just the digit values (0...9) for the corresponding images contained in the first entry of the tuple.
-        The ``validation_data`` and ``test_data`` are similar, except each contains only 10,000 images.
-        Added features (Not available in the original code od M.Nielsen)
-            : Added features (Not available in the original code od M.Nielsen)
-            : Added Download dataset option (in case it doesn't already exist)
-            : Added Downlad Loader using clint
+    A method to load the MNSIT image data as a tuple containing the training data, the validation data, and the test data.
+    The ``training_data`` is returned as a tuple with two entries.
+        - The first entry contains the actual training images.  This is a numpy ndarray with 50,000 entries.
+          Each entry is, in turn, a numpy ndarray with 784 values, representing the 28 * 28 = 784 pixels in a single MNIST image.
+        - The second entry in the ``training_data`` tuple is a numpy ndarray containing 50,000 entries.
+          Those entries are just the digit values (0...9) for the corresponding images contained in the first entry of the tuple.
+    The ``validation_data`` and ``test_data`` are similar, except each contains only 10,000 images.
+
+    Added features (Not available in the original code od M.Nielsen)
+
+        - Added features (Not available in the original code od M.Nielsen)
+        - Added Download dataset option (in case it doesn't already exist)
+        - Added Downlad Loader using clint
     '''
 #########################################################################
     data_path = filename.rstrip('mnist.pkl.gz')
@@ -164,7 +167,7 @@ def load_data_mnist(filename="../../data/mnist.pkl.gz"):
         r = requests.get('http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz', stream=True)
         with open(filename, 'wb') as f:
             total_length = int(r.headers.get('content-length'))
-            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
                 if chunk:
                     f.write(chunk)
                     f.flush()
@@ -173,9 +176,9 @@ def load_data_mnist(filename="../../data/mnist.pkl.gz"):
     training_data, validation_data, test_data = cPickle.load(f)
     f.close()
     def shared(data):
-        """Place the data into shared variables.  This allows Theano to copy
+        """
+        Place the data into shared variables.  This allows Theano to copy
         the data to the GPU, if one is available.
-
         """
         shared_x = theano.shared(
             np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
@@ -187,23 +190,23 @@ def load_data_mnist(filename="../../data/mnist.pkl.gz"):
 
 class Network():
     '''
-        Main class used to construct and train networks.
-        Usage example:
-            net = Network([
-            FullyConnectedLayer(n_in=Input_Neurons, n_out=300),
-            FullyConnectedLayer(n_in=300, n_out=100),
-            SoftmaxLayer(n_in=100, n_out=10)],mini_batch_size)
+    Main class used to construct and train networks.
+    Usage example:
+        net = Network([
+        FullyConnectedLayer(n_in=Input_Neurons, n_out=300),
+        FullyConnectedLayer(n_in=300, n_out=100),
+        SoftmaxLayer(n_in=100, n_out=10)],mini_batch_size)
     '''
     def __init__(self, layers, mini_batch_size):
-        """Takes a list of `layers`, describing the network architecture, and
+        """
+        Takes a list of `layers`, describing the network architecture, and
         a value for the `mini_batch_size` to be used during training
         by stochastic gradient descent.
-
         """
         self.layers = layers
         self.mini_batch_size = mini_batch_size
         self.params = [param for layer in self.layers for param in layer.params]
-        self.x = T.matrix("x")  
+        self.x = T.matrix("x")
         self.y = T.ivector("y")
         init_layer = self.layers[0]
         init_layer.set_inpt(self.x, self.x, self.mini_batch_size)
@@ -214,13 +217,15 @@ class Network():
         self.output = self.layers[-1].output
         self.output_dropout = self.layers[-1].output_dropout
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, 
+    def SGD(self, training_data, epochs, mini_batch_size, eta,
             validation_data, test_data, lmbda=0.0):
         """
-            Train the network using mini-batch stochastic gradient descent.
-            Usage example:
-                net= Network([.......],..)
-                net.SGD(training_data, epochs, mini_batch_size, Learning_Rate, validation_data, test_data, lmbda)
+        Train the network using mini-batch stochastic gradient descent.
+
+        Usage example:
+
+            net= Network([.......],..)
+            net.SGD(training_data, epochs, mini_batch_size, Learning_Rate, validation_data, test_data, lmbda)
         """
         training_x, training_y = training_data
         validation_x, validation_y = validation_data
@@ -236,7 +241,7 @@ class Network():
         cost = self.layers[-1].cost(self)+\
                0.5*lmbda*l2_norm_squared/num_training_batches
         grads = T.grad(cost, self.params)
-        updates = [(param, param-eta*grad) 
+        updates = [(param, param-eta*grad)
                    for param, grad in zip(self.params, grads)]
 
         # define functions to train a mini-batch, and to compute the
@@ -247,29 +252,29 @@ class Network():
             givens={
                 self.x:
                 training_x[i*self.mini_batch_size: (i+1)*self.mini_batch_size],
-                self.y: 
+                self.y:
                 training_y[i*self.mini_batch_size: (i+1)*self.mini_batch_size]
             })
         validate_mb_accuracy = theano.function(
             [i], self.layers[-1].accuracy(self.y),
             givens={
-                self.x: 
+                self.x:
                 validation_x[i*self.mini_batch_size: (i+1)*self.mini_batch_size],
-                self.y: 
+                self.y:
                 validation_y[i*self.mini_batch_size: (i+1)*self.mini_batch_size]
             })
         test_mb_accuracy = theano.function(
             [i], self.layers[-1].accuracy(self.y),
             givens={
-                self.x: 
+                self.x:
                 test_x[i*self.mini_batch_size: (i+1)*self.mini_batch_size],
-                self.y: 
+                self.y:
                 test_y[i*self.mini_batch_size: (i+1)*self.mini_batch_size]
             })
         self.test_mb_predictions = theano.function(
             [i], self.layers[-1].y_out,
             givens={
-                self.x: 
+                self.x:
                 test_x[i*self.mini_batch_size: (i+1)*self.mini_batch_size]
             })
         # Do the actual training
@@ -279,7 +284,7 @@ class Network():
             start=time.clock() #Any extra calculations will not be calculated as training time
             for minibatch_index in xrange(num_training_batches):
                 iteration = num_training_batches*epoch+minibatch_index
-                if iteration % 1000 == 0: 
+                if iteration % 1000 == 0:
                     print("Training mini-batch number {0}".format(iteration))
                 cost_ij = train_mb(minibatch_index)
                 if (iteration+1) % num_training_batches == 0:
@@ -312,10 +317,10 @@ class Network():
 
 #     """
 
-#     def __init__(self, filter_shape, image_shape, poolsize=(2, 2), 
+#     def __init__(self, filter_shape, image_shape, poolsize=(2, 2),
 #                  activation_fn=sigmoid):
 #         """`filter_shape` is a tuple of length 4, whose entries are the number
-#         of filters, the number of input feature maps, the filter height, and the 
+#         of filters, the number of input feature maps, the filter height, and the
 #         filter width.
 
 #         `image_shape` is a tuple of length 4, whose entries are the
@@ -357,21 +362,26 @@ class Network():
 
 class FullyConnectedLayer():
     '''
-        Implementation of a Fully Conected Neuron Layer.
-        Users can determine:
-            -The input connections of the layer as well as the number of neurons the layer consists of $(n_out).
-            -Users can also determine the type of neurons (tanh|sigmoid|Relu)
-            -Finally a chance of dropout can be added
-        The biases are initialized randomly from a normal distribution
-        The weights follow the same process with the difference that the random number is then divided by a factor of sqrt(1.0/n_out)
-        Usage example:
-            FullyConnectedLayer(n_in=Input_Neurons, n_out=300,activation_fn=Neurons)
+    Implementation of a Fully Conected Neuron Layer.
+
+    Users can determine:
+
+        - The input connections of the layer as well as the number of neurons the layer consists of $(n_out).
+        - Users can also determine the type of neurons (tanh|sigmoid|Relu)
+        - Finally a chance of dropout can be added
+
+    The biases are initialized randomly from a normal distribution
+    The weights follow the same process with the difference that the random number is then divided by a factor of sqrt(1.0/n_out)
+
+    Usage example
+
+        FullyConnectedLayer(n_in=Input_Neurons, n_out=300,activation_fn=Neurons)
     '''
     def __init__(self, n_in, n_out, activation_fn=sigmoid, p_dropout=0.0):
         '''
-            Initialize layers parameters
-                -Weights: Random numbers drawn from a normal distribution divided by a factor of sqrt(1.0/n_out).
-                -Biases: Random numbers drawn from a normal distribution.
+        Initialize layers parameters
+            - Weights: Random numbers drawn from a normal distribution divided by a factor of sqrt(1.0/n_out).
+            - Biases: Random numbers drawn from a normal distribution.
         '''
         self.n_in = n_in
         self.n_out = n_out
@@ -406,17 +416,19 @@ class FullyConnectedLayer():
 
 class SoftmaxLayer():
     '''
-        Implementation of a Fully Conected Neuron Layer.
-            -Users can determine the input connections of the layer as well as the number of neurons
-        the layer consists of $(n_out).
-            -Finally a chace of dropout can be added
-        Weights and Biases are initialized to zero
-        Usage example:
-            FullyConnectedLayer(n_in=Input_Neurons, n_out=300,activation_fn=Neurons)
+    Implementation of a Fully Conected Neuron Layer.
+        - Users can determine the input connections of the layer as well as the number of neurons
+    the layer consists of $(n_out).
+        - Finally a chace of dropout can be added
+    Weights and Biases are initialized to zero
+
+    Usage example:
+
+        FullyConnectedLayer(n_in=Input_Neurons, n_out=300,activation_fn=Neurons)
     '''
     def __init__(self, n_in, n_out, p_dropout=0.0):
         '''
-            Initialize layers parameters to zero
+        Initialize layers parameters to zero
         '''
         self.n_in = n_in
         self.n_out = n_out
@@ -454,7 +466,7 @@ def size(data):
 
 def dropout_layer(layer, p_dropout):
     '''
-        Applies dropout to a $(layer) by diactivating a neuron with a pobabilty of $(p_dropout)
+    Applies dropout to a $(layer) by diactivating a neuron with a pobabilty of $(p_dropout)
     '''
     srng = shared_randomstreams.RandomStreams(
         np.random.RandomState(0).randint(999999))

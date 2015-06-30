@@ -5,12 +5,13 @@ The projects purpose is to create a work-flow using some of the available tools 
 
 ## Implementations
 There are 3 folders containing 3 different implementations as well as some other modules of the supportive nature:
-* __Simple_NN_MNIST/:__ Contains a NN implementation using python extended with the scientific computing library [numpy](http://www.numpy.org/). The implementation essentially is an extension of the [code](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network2.py) published by Michael Nielsen for education purposes. All is downloaded in the data/ folder located at the same level as the thesis root folder.
+* __Simple_NN/:__ Contains a NN implementation using python extended with the scientific computing library [numpy](http://www.numpy.org/). The implementation essentially is an extension of the [code](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network2.py) published by Michael Nielsen for education purposes. All is downloaded in the data/ folder located at the same level as the thesis root folder.
 * __theano/:__ Contains a NN implementation written in Python using the [theano](http://deeplearning.net/software/theano/) framework. The implementation is also based on the [work](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network3.py) of M.Nielsen
 * __Torch7:__ Contains a NN implementation using [Torch7](http://torch.ch/) framework as well as the [dp library](https://github.com/nicholas-leonard/dp) by Nicholas Leonard
+The code used is actually an [example](https://github.com/nicholas-leonard/dp/blob/master/examples/deepinception.lua) provided by Nicholas Leonard
 
 ## Requirements
-* __Simple_NN_MNIST/:__
+* __Simple_NN/:__
 In order for the numpy implementation to run successfully the following python packages must be installed.
 	* numpy
 	* configparser
@@ -38,9 +39,9 @@ In order for the torch7 NN implementation to run torch7 must be installed in the
 	```
 ## Execution
 
-* __Simple_NN_MNIST/:__
+* __Simple_NN/:__
 	* Configure: By tampering with the  Simple_NN_MNIST/src/network.ini file
-	* Run: ```./Simple_NN_MNIST/src/run_network.py```
+	* Run: ```./Simple_NN/src/run_network.py```
 * __theano/:__
 	* Configure: By tampering with the  theano/src/network.ini file
 	* Run: ```./theano/src/run_network.py```

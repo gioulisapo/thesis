@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 '''run_network.py
-
+~~~~~~~~~~~~~~
     This module is used to build and train neural Neworks using a numpy NN implementation ./network
     based on the work of Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning)
     using ./cifar_loader.py | ./mnist_loader.py files to load the appropriate datset
-    
+
 '''
 __author__ = "Apostolos Gioulis"
 
@@ -70,7 +70,7 @@ def main():
         writer.writerow(['----------------','-------------------','--------------------','-------------------','---------------------','-----------------'])
     finally:
     	resultF	.close()
-        
+
     # Build Network
     net = network.Network(Layers, cost=Cost_Function, initialization=init, neuron_type=neurons)
     # Start Training

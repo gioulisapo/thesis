@@ -1,5 +1,5 @@
 """mnist_loader.py
-
+~~~~~~~~~~~~~~
     A library to load the MNIST image data.  For details of the data
     structures that are returned, see the doc strings for ``load_data``
     and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
@@ -11,7 +11,7 @@
     Added features (Not available in the original code od M.Nielsen)
         Added Download dataset option (in case it doesn't already exist)
         Added Downlad Loader using clint
-        
+
 """
 
 __author__ = "M. Nielsen, Apostolos Gioulis"
@@ -56,7 +56,7 @@ def load_data():
         r = requests.get('http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz', stream=True)
         with open(minstPath, 'wb') as f:
             total_length = int(r.headers.get('content-length'))
-            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
                 if chunk:
                     f.write(chunk)
                     f.flush()

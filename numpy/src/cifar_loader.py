@@ -1,12 +1,12 @@
 '''cifar_loader.py
-
+~~~~~~~~~~~~~~
     A library to load the Cifar-10 image data.  For details of the data
     structures that are returned, see the doc strings for ``load_data``
     The code is based on the mnist_loder.py implemetation based on the work of
     Michael Nielsen (https://github.com/mnielsen/neural-networks-and-deep-learning).
     Usage Example:
         training_data, validation_data, test_data = cifar_loader.load_data()
-        
+
 '''
 __author__ = "Apostolos Gioulis"
 
@@ -68,21 +68,21 @@ def load_data():
         if os.path.isfile(cifar_tar):
             statinfo = os.stat(cifar_tar)
         if (os.path.isfile(cifar_tar)!=True) or (statinfo.st_size < 170498071): # if the data does not exist in it's tar.gz form download it
-            print 'Cifar-10 dataset is missing. Beginning Download ...'  # Start downloading data while displaying dowload process 
+            print 'Cifar-10 dataset is missing. Beginning Download ...'  # Start downloading data while displaying dowload process
             r = requests.get('http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz', stream=True)
             with open(cifar_tar, 'wb') as f:
                 total_length = int(r.headers.get('content-length'))
-                for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+                for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
                     if chunk:
                         f.write(chunk)
                         f.flush()
         untar(cifar_tar, data_path)
         os.remove(cifar_tar)
-    
+
     f=unpickle('../../../data/cifar-10-batches-py/data_batch_1') #Unpicle data
     v=unpickle('../../../data/cifar-10-batches-py/data_batch_2') #Unpicle data
     t=unpickle('../../../data/cifar-10-batches-py/test_batch') #Unpicle data
-    #Change dormat of data 
+    #Change dormat of data
     training_data=tuple([np.float32(f.get('data')),f.get('labels')]) # *-data format is a 2-d tuple containing the data and labels
 
     validation_data=tuple([np.float32(v.get('data')),v.get('labels')])
