@@ -10,7 +10,7 @@ There are 3 folders containing 3 different implementations as well as some other
 * __Torch7:__ Contains a NN implementation using [Torch7](http://torch.ch/) framework as well as the [dp library](https://github.com/nicholas-leonard/dp) by Nicholas Leonard
 The code used is actually an [example](https://github.com/nicholas-leonard/dp/blob/master/examples/deepinception.lua) provided by Nicholas Leonard
 
-## Requirements
+## Dependencies
 * __numpy/:__
 In order for the numpy implementation to run successfully the following python packages must be installed.
 	* numpy
