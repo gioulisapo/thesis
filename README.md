@@ -51,7 +51,7 @@ In order for the torch7 NN implementation to run torch7 must be installed in the
 
 ## Licence
 
-(The MIT License (MIT))[http://opensource.org/licenses/MIT]
+[The MIT License (MIT)](http://opensource.org/licenses/MIT)
 
 Copyright (c) <year> <copyright holders>
 
